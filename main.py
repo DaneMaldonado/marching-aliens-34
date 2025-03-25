@@ -1,7 +1,13 @@
-i = 0
-edge_reached = False
+newvelocityx = 0
+alienindex = 0
+columnindex = 0
+rowedge = False
+rowindex = 0
+rowedgereached: List[bool] = []
 aliens: List[Sprite] = []
+column = 0
 row = 0
+alienSprite = None
 alienpicture = img("""
     ........................
     ........................
@@ -27,48 +33,51 @@ alienpicture = img("""
     ........................
     ........................
     ........................
-""")
-x = 20
-y = 20
+    """)
+x = 12
+y = 12
 alienrow = 5
 rows = 3
-alienwidth = 16
-alienheight = 16
-alienvelocity = 20
+alienwidth = 15
+alienheight = 15
+alienvelocity = 25
 while row <= rows - 1:
-    col = 0
-    while col <= alienrow - 1:
+    column = 0
+    while column <= alienrow - 1:
         alien = sprites.create(alienpicture, SpriteKind.enemy)
-        alien.set_position(x + col * alienwidth, y + row * alienheight)
+        alien.set_position(x + column * alienwidth, y + row * alienheight)
         aliens.append(alien)
         alien.set_velocity(alienvelocity, 0)
-        col += 1
+        column += 1
     row += 1
 
 def on_on_update():
-    global i
-    row_edge_reached = [False] 
-
-    for row_index in range(rows):
-        row_has_edge = False
-        for col_index in range(alienrow):
-            alien_index = row_index * alienrow + col_index
-            if alien_index < len(aliens):
-                alien2 = aliens[alien_index]
+    global rowedgereached, rowedge, columnindex, alienindex, rowindex, newvelocityx
+    rowedgereached = [False]
+    while rowindex < rows:
+        rowedge = False
+        columnindex = 0
+        while columnindex < alienrow:
+            alienindex = rowindex * alienrow + columnindex
+            if alienindex < len(aliens):
+                alien2 = aliens[alienindex]
                 if alien2.x < 10 or alien2.x > screen.width - 10:
-                    row_has_edge = True
-        row_edge_reached[row_index] = row_has_edge
-
-    for row_index in range(rows):
-        if row_edge_reached[row_index]:
-            for col_index in range(alienrow):
-                alien_index = row_index * alienrow + col_index
-                if alien_index < len(aliens):
-                    alien2 = aliens[alien_index]
+                    rowedge = True
+            columnindex += 1
+        rowedgereached[rowindex] = rowedge
+        rowindex += 1
+    rowindex = 0
+    while rowindex < rows:
+        if rowedgereached[rowindex]:
+            columnindex = 0
+            while columnindex < alienrow:
+                alienindex = rowindex * alienrow + columnindex
+                if alienindex < len(aliens):
+                    alien2 = aliens[alienindex]
                     alien2.y += 5
                     pause(100)
-                    current_velocity_x = alien2.vx
-                    new_velocity_x = current_velocity_x * -1
-                    alien2.set_velocity(new_velocity_x, 0)
-
+                    newvelocityx = 0 * -1
+                    alien2.set_velocity(newvelocityx, 0)
+                columnindex += 1
+        rowindex += 1
 game.on_update(on_on_update)
