@@ -1,10 +1,9 @@
-let row_index = 0
 let row_edge_reached: boolean[] = []
-let aliens: Sprite[] = []
 let row = 0
-let i = 0
-let edge_reached = false
-let column: number;
+let aliens : Sprite[] = []
+let edge = false
+let value = 0
+let col: number;
 let alien: Sprite;
 let alienpicture = img`
     ........................
@@ -32,54 +31,52 @@ let alienpicture = img`
     ........................
     ........................
     `
-let x = 15
-let y = 15
+let x = 20
+let y = 20
 let alienrow = 5
 let rows = 3
-let alienwidth = 15
-let alienheight = 15
-let alienvelocity = 25
+let alienwidth = 16
+let alienheight = 16
+let alienvelocity = 20
 while (row <= rows - 1) {
-    column = 0
-    while (column <= alienrow - 1) {
+    col = 0
+    while (col <= alienrow - 1) {
         alien = sprites.create(alienpicture, SpriteKind.Enemy)
-        alien.setPosition(x + column * alienwidth, y + row * alienheight)
+        alien.setPosition(x + col * alienwidth, y + row * alienheight)
         aliens.push(alien)
         alien.setVelocity(alienvelocity, 0)
-        column += 1
+        col += 1
     }
     row += 1
 }
 game.onUpdate(function () {
-    let row_has_edge: boolean;
-let columnindex: number;
+    let row_index: number;
+let row_has_edge: boolean;
+let col_index: number;
 let alien_index: number;
 let alien2: Sprite;
 let current_velocity_x: number;
 let new_velocity_x: number;
 row_edge_reached = [false]
-    while (row_index < rows) {
+    for (row_index = 0; row_index < rows; row_index++) {
         row_has_edge = false
-        columnindex = 0
-        while (columnindex < alienrow) {
-            alien_index = row_index * alienrow + columnindex
+        for (col_index = 0; col_index < alienrow; col_index++) {
+            alien_index = row_index * alienrow + col_index
             if (alien_index < aliens.length) {
                 alien2 = aliens[alien_index]
                 if (alien2.x < 10 || alien2.x > screen.width - 10) {
                     row_has_edge = true
                 }
-                columnindex += 1
+                
             }
+            
         }
         row_edge_reached[row_index] = row_has_edge
-        row_index += 1
     }
-    row_index = 0
-    while (row_index < rows) {
+for (row_index = 0; row_index < rows; row_index++) {
         if (row_edge_reached[row_index]) {
-            columnindex = 0
-            while (columnindex < alienrow) {
-                alien_index = row_index * alienrow + columnindex
+            for (col_index = 0; col_index < alienrow; col_index++) {
+                alien_index = row_index * alienrow + col_index
                 if (alien_index < aliens.length) {
                     alien2 = aliens[alien_index]
                     alien2.y += 5
@@ -88,9 +85,9 @@ row_edge_reached = [false]
                     new_velocity_x = current_velocity_x * -1
                     alien2.setVelocity(new_velocity_x, 0)
                 }
-                columnindex += 1
+                
             }
         }
-        row_index += 1
+        
     }
 })
